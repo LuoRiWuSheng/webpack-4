@@ -1,0 +1,43 @@
+div {
+	font-size: 25px;
+	color: red;
+}
+
+.imgbox {
+	width: 200px;
+	height: 150px;
+	background: url(./warn-mode.png) 100px 50px no-repeat;
+}
+
+/*直接在css中使用，引入即可,注意文件路径*/
+
+@font-face {font-family: "iconfont";
+  src: url('./fonts/iconfont.eot?t=1541039009640'); /* IE9*/
+  src: url('./fonts/iconfont.eot?t=1541039009640#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAAV4AAsAAAAACTQAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAADMAAABCsP6z7U9TLzIAAAE8AAAARAAAAFY8fkhdY21hcAAAAYAAAABoAAABsst0ndZnbHlmAAAB6AAAAX0AAALIBMawj2hlYWQAAANoAAAALwAAADYTIE0/aGhlYQAAA5gAAAAcAAAAJAfeA4ZobXR4AAADtAAAAA4AAAAUFAAAAGxvY2EAAAPEAAAADAAAAAwAwgG0bWF4cAAAA9AAAAAdAAAAIAEZAJ1uYW1lAAAD8AAAAUUAAAJtPlT+fXBvc3QAAAU4AAAAPwAAAFFGCGgReJxjYGRgYOBikGPQYWB0cfMJYeBgYGGAAJAMY05meiJQDMoDyrGAaQ4gZoOIAgCKIwNPAHicY2BkYWCcwMDKwMHUyXSGgYGhH0IzvmYwYuRgYGBiYGVmwAoC0lxTGByecTzLZm7438AQw9zA0AAUZgTJAQDlvgxWeJztkcENgCAMRV8BDTEuYuIQXJlFTw7dNbSlHhzCT17T/0NoUoAJyMZuFJALwXVaKiPPLCMvNPMLlUTSqpt2Pe4bvv0rsXtx/NVk3mbIzK911Pa64tsLRr8FtjG0B/4LegTkBw9IGKd4nLVSzUpCQRj9zox6wfBOC/MS98e80FxLStDLvdiPLVpFQo+QbyAtaxPt2tUjFBItWlivoVKbNoJRbxDu69ZoCkFUi2gYznznm3P4DsMQSC1eYFc0RQRP8zRDM0Ij9Hhh7fl5slnjEyHleXvlRxyUJZpPyCK0hCv9DXjSD0pZhIHDBAwHmg6+aYbph75TW7H6fWul5vQf7FoFiggdbE5LTqXH/bHGRGVbETGftpeG0dSsM/7E6zRLHpVVxlwY+NIVLJHJMgeBX0SuCl9yV2czGTICCiXxZXhVhA4MNaQdPe4LKy/aTEeKtaelLQ7gzljWY711vBWH6HYh4vFo0G32YrFec4S4PhDS1jvQ8zo6OhypTGbexM3WcavejQbxsfHlYmJRSJRUee/5JV8koV6nSBu0Q7vUoEM6oVOVvpSxkU4U4Mp1+EE59wv/Z/0qwEwpzcYQ0Bzi3qg8H5WWlFaU+qtgjy+M77+B6E4dQ+VH40sV3f7sV9/kHSnPmZMAAAB4nGNgZGBgAOKKNKGt8fw2Xxm4WRhA4AZDy0IE/X8BCwNzApDLwcAEEgUADBsJYAB4nGNgZGBgbvjfwBDDwgACQJKRARWwAgBHCwJueJxjYWBgYEHDAAEEABUAAAAAAAAAGgBQAKgBZHicY2BkYGBgZZjIwMUAAkxAzAVm/wfzGQAX4AG3AAAAeJxlj01OwzAQhV/6B6QSqqhgh+QFYgEo/RGrblhUavdddN+mTpsqiSPHrdQDcB6OwAk4AtyAO/BIJ5s2lsffvHljTwDc4Acejt8t95E9XDI7cg0XuBeuU38QbpBfhJto41W4Rf1N2MczpsJtdGF5g9e4YvaEd2EPHXwI13CNT+E69S/hBvlbuIk7/Aq30PHqwj7mXle4jUcv9sdWL5xeqeVBxaHJIpM5v4KZXu+Sha3S6pxrW8QmU4OgX0lTnWlb3VPs10PnIhVZk6oJqzpJjMqt2erQBRvn8lGvF4kehCblWGP+tsYCjnEFhSUOjDFCGGSIyujoO1Vm9K+xQ8Jee1Y9zed0WxTU/3OFAQL0z1xTurLSeTpPgT1fG1J1dCtuy56UNJFezUkSskJe1rZUQuoBNmVXjhF6XNGJPyhnSP8ACVpuyAAAAHicY2BigAAuBuyAlZGJkZmRhZGVkY2BNTknNbGIKzM5Py++vCg/L50tLTEvozSTMyuzNB3ITU9lYAAA9ekMvwA=') format('woff'),
+  url('./fonts/iconfont.ttf?t=1541039009640') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('./fonts/iconfont.svg?t=1541039009640#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-clear:before { content: "\e649"; }
+
+.icon-icon_wrong:before { content: "\e629"; }
+
+.icon-fanhui:before { content: "\e66b"; }
+
+.icon-jiugongge:before { content: "\e608"; }
+
+
+.font-test {
+	color: blue;
+	font-size: 50px;
+	font-family: @font-face;
+}
