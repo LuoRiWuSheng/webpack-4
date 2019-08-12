@@ -1,0 +1,12 @@
+@import "./b.css";
+
+body {
+    background: pink;
+    color: yellow;
+    transform: rotate(-45deg);
+    font-size: 50px;
+}
+
+body div {
+    transform: rotate(-45deg);
+}
