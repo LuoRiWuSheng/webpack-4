@@ -1,0 +1,41 @@
+body .ctd-layer-skin .layui-layer-content{
+	background: #1982F8;
+	color: #fff;
+	opacity: 0.8;
+}
+
+/*针对tips*/
+body .ctd-layer-skin  i.layui-layer-TipsB, 
+body .ctd-layer-skin  i.layui-layer-TipsT {
+	border-right-color: #1982F8;
+}
+
+body .single-tips .layui-layer-content {
+	width: inherit;
+	display: table-cell;
+	vertical-align: middle;
+	background-image: url("../../../img/layer-bg.jpg");
+	background-repeat: repeat-x;
+	background-size: 520px 520px;
+	background-position: -10px -10px;
+	color: #FFF;
+	font-size: 24px;
+	font-weight: 700;
+	overflow: visible;
+	text-align: left;
+	padding: 0 20px;
+	box-sizing: border-box;
+}
+
+body .single-tips .layui-layer-title {
+	background: rgb(91,172,254);
+	color: #fff;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+body .comfim-skip .layui-layer-content {
+	overflow: hidden;
+	text-align: left;
+	font-weight: 700;
+}

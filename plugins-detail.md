@@ -5,7 +5,9 @@
 - [css-loader]() 解析 @import语法
 - [style-loader](https://webpack.js.org/loaders/style-loader/#root) 将解析好的样式插入到heade中
 - [file-loader]() 
-
+- [html-webpack-plugin]()
+- [clean-webpack-plugin]()
+- [glob]() 快速获取文件列表
 
 
 ---
@@ -69,15 +71,17 @@ module.exports = {
 
 > css-loader 是用来解析模块中通过@import 或者 url()的引入的样式
 
-a.js 文件
+test.css文件
 ```js
 // 第一种
 @import "./header.css"
 或
 @import url("./header.css")
 上面这2种没区别
+```
 
-
+a.js 文件
+```js
 // 第二种
 import t from "footer.css"
 
@@ -238,6 +242,25 @@ css-loader先将样式文件都解析好，然后交给style-loader 做注入
 
 #### style-loader 配置项
 
+<span style="color: red;">注:</span>
+1. 如果使用style-loader 在webpack.config.js中配置rules的时候，报下面的错误
+```js
+Style Loader Invalid Options
+```
+版本问题，0.23.x的配置options就会报错，升级为 1.0.0，配置options就不会报错
+
+```js
+rules: [
+    {
+        loader: "style-loader",
+        options: {
+            injectType: "singletonStyleTag"
+        }
+    }
+]
+```
+
+
 **injectType**: styleTag(默认) | singletonStyleTag
 
 - styleTag 表示用多个 style注入样式
@@ -307,6 +330,164 @@ module.exports = {
 >   设置 style或者link插入到哪里，默认是在head那里，官方不建议修改
 
 还有生成随机数，就不解释，效果不大
+
+
+---
+### html-webpack-plugin
+
+**参考文档**
+ - [插件 html-webpack-plugin 的详解](https://segmentfault.com/a/1190000013883242?utm_source=tag-newest) from segmentfault
+
+### glob
+> 在使用webpack 打包多页应用的时候，我们需要读取入口文件的列表，但是又不想一个一个手写，那么可以通过 glob包，帮助我们读取列表
+
+```
+npm install glob --save-dev
+```
+
+```js
+const glob = require("glob")
+
+// 回调函数
+/**
+ * 如果找到匹配参数1 的文件，就返回文件名称，带路径的
+ * 没有找到，就返回空数组
+ * 
+ */
+
+ /*
+    目录层次
+    / 
+      - src
+      |  -js
+      |  -view
+      |    - about.html
+      |    - home.html
+      - test
+      |  - glob.js
+  */
+var pattern1 = "../src/*/*"
+var pattern2 = "../src/view/*"
+
+glob(pattern2,{
+  nodir: true
+}, function(err, files) {
+  if(err) {
+    console.log(err)
+    return
+  }
+  console.log(files)
+  
+})
+
+// 结果
+/**
+ * pattern1 会得到的结果是 src下面所有的文件
+    [ '../src/js/about.js',
+  '../src/js/app.js',
+  '../src/js/common.js',
+  '../src/view/about.html',
+  '../src/view/home.html' ]
+
+    pattern2 会得到view目录下面的所有文件
+      [ '../src/view/about.html', 
+        '../src/view/home.html' ]
+ */
+```
+
+既然拿到了列表的路径包括文件名，那么再配合 html-webpack-plugin 循环遍历出需要的多页应用，是比较简单的
+
+
+**参考链接**
+  - [glob 在webpack中的使用。](https://www.cnblogs.com/waitforyou/p/7044171.html)
+
+
+---
+### CopyWebpackPlugin
+
+> 拷贝文件或者文件及到打包后的目录， 会打包到 output配置指定的目录
+
+```
+yarn add copy-webpack-plugin -D
+```
+
+以下说的打包目录，指的就是 dist目录
+webpack.config.js
+```
+const path = require("path")
+const CopyWebpackPlugin = require("copy-webpack-plugin")
+
+module.exports = {
+  output: {
+    filename: "[name].bundle.js",
+    path: path.resolve(__dirname, "dist")
+  },
+  ....
+  plugins: [
+    new CopyWebpackPlugin([
+      // 第一种 -- 这个会打包到 outpu指定的输出目录
+      {from: "src/doc/1.txt"},
+      // 第二种 只指要copy的文件, 没有指定要拷贝的具体目录，就会直接拷贝到 dist/ 目录下面
+      'src/doc/2.txt',
+      // 第三种 指定要copy的文件，和要拷贝的目的地路径
+      {from: "src/doc/3.txt", to: "src/doc/3.txt"},
+      // 第四种，将文件拷贝到 dist下面的某个目录下面
+      {from: "src/doc/4.txt", to: "src/word"},
+      // 第五种 直接将一个目录拷贝到 dist目录下面, 没有指定to，都是默认拷贝到 dist目录下面
+      {from: "src/test"}
+      // 第六种 将from的test目录的内容，拷贝到 dist/test目录， 无论dist/test目录是否存在，原本dist/test目录也不应该存在，因为每次打包，都应该被重新创建
+      {from: "src/test", to: "test"}
+    ])
+  ]
+}
+```
+
+没有指明 to 具体路径，都是将文件或目录拷贝到 dist/ 下面
+
+- 第一种和第二种是一样的效果，等价
+- 第五种 是将 test目录下面的内容直接拷贝到 dist目录，test目录并不会在 dist目录下面被创建
+- 发现上面的只要指定了 to这个配置的，都是不需要去设置 成dist/home/a.js， 直接使用 home/a.js 即可
+- new CopyWebpackPlugin9([copy-1, copy-2], 配置项) 参数1位置是一个数组，就是可以指定多个需要拷贝的指令， 参数2是一个对象
+- 要拷贝多个，就配置多个
+
+```
+new CopyWebpackPlugin([], {
+  context: compiler.options.context, // 指定拷贝的 from 的上下文路径
+  ignore: [], // from中那些文件是被忽略，不拷贝的，这是应用于所有的from的
+  copyUnmodified: Boolean, // 默认false 在使用watch | webpack-dev-server 对文件监控时，只拷贝第一次，无论后面要拷贝的文件是否发生变化，都不再拷贝 
+  debug: "warming | info | debug"  // 这个参数没什么用, warming和 info从控制台没看到有什么区别
+})
+```
+
+上面只是简单的使用，copy使用，如果要跨文件目录层次，也是可以的
+比如 
+将含有 c目录下面的所有文件，拷贝到dist/doc目录下
+```
+from: src/a/b/c/  to doc/
+// 可以写成
+from: src/**/**/c to doc/
+```
+---
+
+### BannerPlugin
+> 为每一个chunk文件，添加一个版权声明
+
+usage-1
+直接传入一个字符串
+webpack.config.js
+```
+const webpack = require("webpack")
+module.exports = {
+  ... 其他配置项
+  plugins: [
+    new webpack.BannerPlugin("2019年10月25打包")
+  ]
+}
+```
+
+![webpack.BannerPlugin.png](./source-screenshot/webpack.BannerPlugin.png)
+
+有多少个chunk文件，就会在每个chunk都添加这个，然后这个只有在打包的时候才会有，在开发环境是没有生成实体的文件。所以只能在浏览器的控制台中看， 在 chrome的network或者sources面板都可以看到
 
 
 

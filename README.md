@@ -6,10 +6,10 @@
 - [lesson-4]() 
 - [lesson-5]() html-webpack-plugin 模块
 - [lesson-6]() css-loader 静态资源
-- [lesson-7]() 
-
-
-
+- [lesson-7]() babel 处理js-es6转es5等
+- [lesson-8]() 全局变量引入
+- [lesson-9]() 图片处理的几种场景
+- [lesson-10]()
 
 
 webpack在4这个版本，需要安装2个,最好局部安装webpack,避免因为版本不同，对项目产生影响

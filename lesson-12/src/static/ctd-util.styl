@@ -1,0 +1,119 @@
+base-spacing = 16px;
+
+space-sizes = {
+  "0": 0,
+  "1": 0.5,
+  "2": 1,
+  "3": 1.25,
+  "4": 1.5,
+  "5": 2,
+  "6": 3,
+}
+
+.ctd-w-100 {
+  width: 100% !important;
+}
+.ctd-w-50 {
+  width: 50% !important;
+}
+.ctd-h-100 {
+  height: 100%;
+}
+
+
+// 方向
+director = {
+  l: left,
+  r: right,
+  t: top,
+  b: buttom 
+}
+
+space-direction = {
+  p: padding,
+  m: margin
+}
+
+// 大小
+for key, val in space-sizes {
+   // margin/padding
+  for sKey, sVal in space-direction {
+    .ctd-{sKey}x-{key} {
+      {sVal}-left: base-spacing * val;
+      {sVal}-right: base-spacing * val;
+    }
+    .ctd-{sKey}y-{key} {
+      {sVal}-top: base-spacing * val;
+      {sVal}-bottom: base-spacing * val;
+    }
+  }
+
+  // 方向 上下左右
+  for dKey, dVal in director {
+    .ctd-px-{dKey}-{key} {
+      padding-{dVal}: base-spacing * val
+    }
+
+    .ctd-py-{dKey}-{key} {
+      padding-{dVal}: base-spacing * val
+    }
+
+    .ctd-my-{dKey}-{key} {
+      margin-{dVal}: base-spacing * val
+    }
+
+    .ctd-mx-{dKey}-{key} {
+      margin-{dVal}: base-spacing * val
+    }
+
+  }
+}
+base-obj ={
+  // 18px
+  xxs: 1.125rem,
+  // 20px
+  xs: 1.25rem,
+  // 22px
+  sm: 1.375rem,
+  // 26px
+  md: 1.625rem,
+  // 32px
+  lg: 2rem,
+  // 56px
+  xl: 3.5rem
+}
+
+for key,val in base-obj
+  .fs-{key} {
+    font-size: base-spacing * val;
+  }
+
+font-style = {n: 500, w: 700}
+for key,val in font-style
+  .fs-{key} {
+    font-weight: val;
+  }
+
+.panel-radius {
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1) !important;
+  border-radius: 8px !important;
+}
+
+colors = {
+  content: #4A4A4A,
+  black: #fff,
+  warming: #ff0000,
+  bg-1: #1982F8,
+  bg-2: #18A5FF,
+  btn-bg: #A94CFF
+}
+
+for key,val in colors 
+  .color-{key} {
+    color: val;
+  }
+
+.ctd-panel-heading {
+  background: #1982F8;
+  color: #fff;
+}

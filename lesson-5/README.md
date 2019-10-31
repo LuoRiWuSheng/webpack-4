@@ -43,7 +43,17 @@ output中的filename的hash，这个hash串是加在 index.bundle.xxxhashxxx.js 
 
 这2个hash生成的地方不一样，作用一样，清除缓存
 
- 
+html-webpack-plugin 可以通过 filename 这个配置，将输出的路径也配置进去，而不仅仅是文件名
+
+```js
+...其他配置
+ new HtmlWebpackPlugin({
+   filename: "page/about.html"
+ })
+
+ // 主要看出口文件路径，这个page会在out.path这个目录下建立，并将about.html生成
+```
+
 
 文档参考链接
 

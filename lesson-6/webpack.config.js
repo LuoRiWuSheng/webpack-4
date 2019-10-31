@@ -41,16 +41,23 @@ module.exports = {
             // css-loader  解析 @import 这种语法
             // style-loader  将上面解析出来的内容插入到html中
             {
-                test: /\.css$/,
-                //use: ["style-loader", "css-loader"] 
+                test: /\.css$/i,
+               /* use: [{
+                    loader: 'style-loader',
+                    options: {
+                        injectType: "singletonStyleTag"
+                    }
+                }, 'css-loader']
+                */
                 use: [
                     MiniCssExtractPlugin.loader,
                     "css-loader",
                     // 添加css的浏览器前缀
                     {
                         loader: "postcss-loader"
-                      
-                    }
+                    },
+                    "less",
+                    "less-loader"
                 ]
 
             }
