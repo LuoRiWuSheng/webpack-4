@@ -19,3 +19,10 @@
 // require("jquery")
 // console.log($("body"))
 
+// 上面是通过 expost-loader 引入第三方包，下面是通过 new webpack.ProvidePlugin()自动注入
+
+/*========================================*/
+console.log($)
+console.log(window.$) // undefined
+
+

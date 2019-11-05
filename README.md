@@ -1,15 +1,18 @@
 ## webpack
 
-- [lesson-1]() 
-- [lesson-2]() 多入口，多出口，
-- [lesson-3]() HMR 热模块加载 webpack-dev-server, clean-webpack-plugin
-- [lesson-4]() 
-- [lesson-5]() html-webpack-plugin 模块
-- [lesson-6]() css-loader 静态资源
-- [lesson-7]() babel 处理js-es6转es5等， eslint配置使用
-- [lesson-8]() 全局变量引入
-- [lesson-9]() 图片处理的几种场景
+- [lesson-01](./lesson-01) 
+- [lesson-02](./lesson-02) 多入口，多出口，
+- [lesson-03](./lesson-03) HMR 热模块加载 webpack-dev-server, clean-webpack-plugin
+- [lesson-04](./lesson-04) 
+- [lesson-05](./lesson-05) html-webpack-plugin 模块
+- [lesson-06](./lesson-06) css-loader 静态资源
+- [lesson-07](./lesson-07) babel 处理js-es6转es5等， eslint配置使用
+- [lesson-08](lesson-08) 第三方模块引入问题，全局模块，防止重复打包externals
+- [lesson-09](./lesson-09) 图片处理的几种场景
 - [lesson-10]()
+- [lesson-11]()
+- [lesson-12](./lesson-12) 多页配置，打包，生产环境和开发环境分离
+- [lesson-13](./lesson-13) devtool 和watch监控文件改动重新打包
 
 
 webpack在4这个版本，需要安装2个,最好局部安装webpack,避免因为版本不同，对项目产生影响

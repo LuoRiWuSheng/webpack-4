@@ -15,6 +15,16 @@ npm install jquery --save
 
 但是这种使用，jquery是不会挂载到window上的
 
+2. 使用 expose-loader 来加载， 下面的内联loader 详细从配置到使用
+
+> 上面2种方式，都需要手动去引入第三方模块，没有自动注入到全局，依旧繁琐，每一个业务的js逻辑，第一行都要将我们的依赖包手动 require或者import引入。
+
+3. 使用webpack插件解决包的全局暴露问题 -- 一次注入到每个模块中，可直接使用。
+
+- 使用 new webpack.ProvidePlugin() 注入
+> 这种方式的注入，并不会将第三方包例如 jquery挂载到window上，是可以直接使用$，但是window.$会是undefined
+- 如果我们在所有模块都注入了第三方包，但是又引入了 在线CDN，但是为了模块化考虑，又使用require的方式引入，webpack就会再打包一次，重复打包，那么我们的bundle提及就会变大，具体使用详情，看下面的 externals
+
 
 ## loader 分类
 
@@ -68,10 +78,7 @@ module.expots = {
 // 通过在webpack中配置plugin， 使用expose-loader
 require("jquery")
 console.log($("body"))
-
 ```
-
-
 
 - pre
 > 前面执行的loader
@@ -100,3 +107,103 @@ console.log($("body"))
 let $$ = require("jquery")
 console.log($$("body"))
 ```
+
+---
+## provide-plugin
+
+[provide-plugin- webpack官网](https://webpack.js.org/plugins/provide-plugin/#root)
+
+- provide-plugin查找包的路径从当前目录下和node_modules中查询
+- 可以指定包的完整路径，不指定路径，就会去node_modules下找
+
+webpack.config.js
+```
+const webpack = require("webpack")
+const path = require("path")
+
+module.exports = {
+  entry: {...},
+  plugins: [
+    // 传入一个对象
+    new webpack.ProvidePlugin({
+      // 从指定的src路径去加载jquery包
+      $: path.resolve(__dirname, "src/plugin/jquery.min.js"),
+      // 从node_modules中加载，前提是 npm install jquery --save
+      jQuery: "jquery",
+      // 上面2种方式只是暴露了占位符$和jQuery到全局，并没有挂载到window上面, 下面就挂载到全局
+      "window.$": "jquery"
+    })
+  ]
+}
+```
+
+**Question**
+1. 使用了暴露全局的ProvidePlugin， 但是某一个业务中并未使用它，也没有使用上面的占位符，一个业务中，从始至终都没有用jquery，那么，这个bundle会不会变小
+
+>  没有使用，就不会动态注入，bundle的提及自然变小
+
+webpack.config.js配置
+![provide-plugin.png](./screenshot/provide-plugin.png)
+下面是network对比图
+在src/index.js中使用了$符号(占位符)  bundle大小是 650k
+
+![use-$.png](./screenshot/use-$.png)
+
+没有使用的 -- 大小375k
+![no-use-jquery.png](./screenshot/no-use-jquery.png)
+
+通过对比图，发现，ProvidePlugin是动态注入的，没有在业务中使用，就不会打包进去
+
+
+2. 使用了在线CDN库，但是又使用require的方式引入，导致打包的js体积变大，如何避免？ 
+> 在使用了线上CDN库以后，比如jquery,Vue 这些都会挂载到window下面，单纯的使用CDN是不会被webpack打包处理的， 但是，又希望模块化的方式使用，使用require引入了， 就会被打包进bundle，导致体积增大
+
+[externals-webpack官网](https://www.webpackjs.com/configuration/externals/)
+
+src/index.html
+```
+...其他code
+// 引入线上CDN
+<script src="https://cdn.bootcss.com/jquery/2.2.3/jquery.js"></script>
+```
+
+src/index.js
+
+```
+// 然后又希望模块化，使用require导入
+const $ = require("jquery")
+```
+webpack.config.js中的ProvidePlugin继续保留
+
+像上面这种形式， 就会再次打包，导致包体积变大
+
+使用externals 配置，告知webpack不要重复打包
+
+webpack.config.js
+
+```
+module.exports = {
+  entry: {...},
+  output: {...},
+  plugins: [
+
+  ],
+  externals: {
+    jquery: "jquery"
+  },
+}
+```
+注意externals配置项是和output等平级配置的, 配置完 externals，再对比bundle的大小，发现少了一半体积
+
+---
+
+## 小结
+
+上面详细介绍了几种引入第三方模块的方式
+
+1. expose-loader 挂载到window上
+2. new webpack.ProvidePlugin() 给每一个打包的文件提供占位符
+3. 引入CND 不打包
+
+
+

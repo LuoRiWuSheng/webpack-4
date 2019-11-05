@@ -15,13 +15,13 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: require.resolve("jquery"),
-        use: [{
-          loader: 'expose-loader',
-          options: '$'
-        }]
-      }
+      // {
+      //   test: require.resolve("jquery"),
+      //   use: [{
+      //     loader: 'expose-loader',
+      //     options: '$'
+      //   }]
+      // }
     ]
   },
   devtool: "source-map",
@@ -32,8 +32,14 @@ module.exports = {
       filename: "index.html",
       title: "首页",
       path
+    }),
+    new webpack.ProvidePlugin({
+      $: "jquery"
     })
   ],
+  externals: {
+    jquery: "jquery"
+  },
   devServer: {
     hot: true
   }
