@@ -11,7 +11,7 @@ npm install jquery --save
 
 // 直接在 src/index.js中使用， 如下图，都是可以
 ```
-![use-jq.png](screenshot/use-jq.png)
+![use-jq.png](./screenshot/use-jq.png)
 
 但是这种使用，jquery是不会挂载到window上的
 
