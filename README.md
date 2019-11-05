@@ -6,7 +6,7 @@
 - [lesson-4]() 
 - [lesson-5]() html-webpack-plugin 模块
 - [lesson-6]() css-loader 静态资源
-- [lesson-7]() babel 处理js-es6转es5等
+- [lesson-7]() babel 处理js-es6转es5等， eslint配置使用
 - [lesson-8]() 全局变量引入
 - [lesson-9]() 图片处理的几种场景
 - [lesson-10]()

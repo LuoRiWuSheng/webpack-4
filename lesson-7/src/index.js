@@ -4,7 +4,7 @@ let f1 = ()=> {
 }
 
 f1()
-
+/*
 // es6定义一个类
 @di
 class Foo {
@@ -38,3 +38,7 @@ console.log(g().next())
 
 // chrome是可以的 ie就不行
 console.log("abc".includes("a"))
+
+var a;
+a= 222
+*/
