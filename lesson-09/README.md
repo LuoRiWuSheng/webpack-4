@@ -68,7 +68,9 @@ module.exports = {
 limit是字节单位
 
 1Byte(字节) =  8bit(位)
+
 1KB = 1024B = 1024 byte
+
 1MB = 1024 KB
 
 比limit小的都会变成base64， 比limit限定的大小大的，都会产生实体文件
