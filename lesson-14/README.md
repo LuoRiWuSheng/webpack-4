@@ -459,7 +459,7 @@ module.exports = {
 ![vendors-plugins.png](./screenshot/vendors-plugins.png)
 
 3. 如果在 cacheGroups.name 指定了这个名字以后，就会覆盖默认生成chunks 名字的规则
-默认是 vendors~模块a~模块b.(output.filename).js
+默认是 vendors\~模块a\~模块b.(output.filename).js
 指定了name以后，就是 name.(output.filename).js
 
 ```
@@ -498,12 +498,195 @@ module.exports = {
 ```
 [optimization-官网](https://webpack.js.org/configuration/optimization/)
 
+## 9.1 代码拆分的三种方式
+[code-splitting-webpack官网](https://webpack.js.org/guides/code-splitting/)
+> 代码拆分，实现了更小的包，更快的加载速度， 有3种方式拆分代码，实际项目中需要结合使用
+
+1. 从 entry 配置代码（对于多入口是有用的）
+
+webpack.config.js
+```
+module.exports = {
+  entry: {
+    index: "./src/index.js",
+    about: "./src/about.js"
+  }
+}
+```
+
+上面的entry,如果对应多个页面，可以将业务逻辑拆分成2个bundle(包)， 在加载的时候，只要在 html-webpack-plugin的chunks配置中，配置自己需要的chunk就可以，做到代码拆分
+
+**缺点**： 
+- 没有办法处理index.js和 about.js都引用的 模块，比如jquery, axios等，在打包的时候，会将这些依赖都打包进 index.js 和 about.js， 这就没有办法拆分多页应用中共用(重复)的代码；（结合 splitChunks来做这方面的优化）
+- 一次性将代码打包进 index.js与about.js文件，即使业务逻辑都还没有用到的资源，也打包进去，导致包过大，也不够灵活（配合第三种-动态打包-懒加载解决）
+
+
+2. 使用SplitChunksPlugin来重复和拆分块。
+>   splitChunksPlugin 是用来拆分第三方模块和公司内部自研的一些工具库的，具体看上面的详细使用
+> 通过split-chunks-plugin 这个配置，移除业务业务中公共的插件 jquery lodash等，抽离成单独的文件，减小实际业务代码 index.js 与 about.js的体积，获得更快的加载速度
+
+还可以将 css文件抽离成单独的文件打包导出 mini-css-extract-plugin
+
+3. 动态拆分代码， 动态加载模块，做到代码的拆分，按需加载（懒加载）
+> 动态拆分代码支持2种写法。 第一种： ES6的 [import("./src/moduleA.js")](https://webpack.js.org/api/module-methods/#import-1)； 第二种是 webpack提供的 [require.ensure()](https://webpack.js.org/api/module-methods/#requireensure)
+
+注意的几个点：
+
+1. 在 output配置中增加chunkFilename 属性
+> 这个属性是决定了非入口配置(entry.filename)的chunk的名称，只要你的模块不是写在 entry入口中的，那么使用的名称就会是这里的 [name].[hash:6].chunks.js
+```
+module.exports = {
+  output: {
+    chunkFilename: "[name].[hash:6].bundle.js"
+  }
+}
+```
+
+2. 在业务代码中使用 import 导入需要的包
+![dynamic-module.png](./screenshot/dynamic-module.png)
+
+import 导入需要的包，这里里面的webpackChunkName, 是为了做 splitChunks 中的cacheGroups用的，就归类， 起相同的名字，就会打包到一块去
+
+再去看[vue-router 中的路由懒加载](https://router.vuejs.org/zh/guide/advanced/lazy-loading.html)，就觉得非常的正常，刚好就是利用的 webpack的懒加载特性，非vue自创的这个东西
+
+webpackChunkName 注释中的起的模块名， 最终会反应到 name.{output.chunksFilename} 上去 比如 print.14103e.bundle.js
+
+因为 import导入的模块会执行导入模块的 default值，所以，通过then去可以接收这个值
+
+定义模块 src/moduleB.js
+```
+export defalut {
+  descriptor: "B模块导出的默认值",
+  name: "张三"
+}
+```
+
+使用模块 src/index.js
+
+```
+import(/*webpackChunkName: "print"*/ "./moduleB.js").then(module=> {
+  // 拿到 name属性
+  let a = module.defalut.name
+})
+
+也可以使用 async... awiat, 因为这个是要使用在函数上的，所以包装一层函数
+
+let f = async function() {
+  let {defalut: {name}} = await import(/*webpackChunkName: "print"*/ "./moduleB.js")
+
+  console.log(name)
+}
+```
+直接使用 async ... wait 是不行的，需要 babel编译才可以
+
+```
+yarn add 
+  "@babel/core": "^7.7.2",
+  "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+  "@babel/plugin-transform-runtime": "^7.6.2",
+  "@babel/polyfill": "^7.7.0",
+  "@babel/preset-env": "^7.7.1",
+  "@babel/preset-react": "^7.7.0",
+  "@babel/runtime": "^7.7.2",
+  "babel-loader": "^8.0.6",
+```
+然后项目根目录新建 .babelrc 文件
+
+```
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "module": false,
+      "target": {
+        "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
+      },
+      "useBuiltIns": "usage"
+    }]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-runtime"
+  ]
+}
+```
+webpack.config.js还要配置 babel
+
+```
+{
+  test: /\.js$/,
+  exclude: /(node_modules)/,
+  include: path.resolve(__dirname, "../src"),
+  use: [
+    {
+      loader: "babel-loader",
+      options: {
+        presets: ["@babel/preset-env", "@babel/preset-react"],
+        plugins: ["@babel/plugin-syntax-dynamic-import"]
+      },
+      
+    }
+  ]
+}
+```
+![async-loader-chunks.png](./screenshot/async-loader-chunks.png)
+以上关于懒加载的代码在 lesson-15 目录
+
+---
+下面的章节源码看 lesson-15
 
 ## 10 webpack配置代码懒加载
+> 上面的代码拆分中非常详细的
+
+懒加载是可以明显在 控制台中的 network加载代码的，会产生HTTP请求， 其原理是通过JSONP 实现
+
 
 ## 11 webpack 代码热更新
+> 热更新就是在我们开发模式的时候，写的内容在 ctrl+s 保存的时候，页面自动刷新； 我们应该在开发阶段使用，生成阶段我们不需要这个东西， 结合 webpack-merge 以及在package.json中配置不同的命令即可
 
-## 
+*热更新代码在 leeson-15中*
+
+1. 安装 webpack-dev-server， 作为开发阶段的启动服务
+```
+yarn add webpack-dev-server -D
+```
+
+2. webpack.config.js启用热更新
+
+webpack.config.js
+```
+module.exports = {
+  entry: {...},
+  ouput: {...},
+  devServer: {
+    hot: true
+  },
+  plugins: [
+     // 启动HRM 哪一个模块有更新，会打印更新文件的相对路径
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
+  ]
+}
+```
+
+3. 使用热更新插件 NamedModulesPlugin 、 HotModuleReplacementPlugin
+
+NamedModulesPlugin 会告诉我们哪个模块的业务代码是有更新，将更新的路径反馈在浏览器控制台中
+![hot-Name-module.png](./screenshot/hot-Name-module.png)
+
+HotModuleReplacementPlugin 热更新插件
+
+启用热更新以后，我们可以在 业务逻辑中使用一些webpack暴露出来的api， 做一些其他操作
+
+src/index.js
+```
+if(module.hot) {
+  module.hot.accept("./moduleA.js", ()=> {
+    console.log(arguments)
+    console.log("模块A更新了")
+    require("./moduleA.js")
+  })
+}
+```
+这里使用 reuqire 是CommonJS的规范，它在哪里引用都无所谓，不能使用 import ，因为import 会存在变量提升问题
 
 ### 参考链接
 

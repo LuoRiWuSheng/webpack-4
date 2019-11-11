@@ -13,6 +13,9 @@
 - [lesson-11]()
 - [lesson-12](./lesson-12) 多页配置，打包，生产环境和开发环境分离
 - [lesson-13](./lesson-13) devtool 和watch监控文件改动重新打包
+- [lesson-14](./lesson-14) webpack性能优化
+- [lesson-15](./lesson-15) wepack热更新 懒加载代码，详细说明在lesson-14中
+- [lesson-16](./lesson-16) tapable流程控制，发布订阅模式
 
 
 webpack在4这个版本，需要安装2个,最好局部安装webpack,避免因为版本不同，对项目产生影响
