@@ -85,6 +85,240 @@ console.log($("body"))
 - normal loader  普通loader
 - 后置loader
 
+### loader的加载顺序
+
+pre(前缀) --> normal(普通loader) --> inline-loader(行内loader) --> post(后置loader)
+
+
+### 行内loader使用详情
+加入some-loader是一个自定义的loader
+
+
+```
+let str = require("-!some-loader!./a.js")
+```
+>说明： loader前面加 -! 表示文件不会通过 pre 和normal loader处理
+
+
+src/test.js
+```
+// 引入a.js, 通过 some-loader解析
+let str = require("!some-loade!./a.js")
+```
+> 说明： loader前面一个! 表示 引入的资源不会让normal 普通loader去解析，如果有 pre 和post 会通过他们解析
+
+src/test.js
+```
+let str = require("!!some-loader!./a.js")
+```
+> 说明： !! 表示不需要 pre 和normal 和post loader处理a.js 只使用 some-loader处理引入的资源
+
+
+
+### webpack.config.js中loader的使用方式（2种）
+> 下面演示的是多个loader会依次处理同一种文件类型的资源
+
+loader的执行顺序是 从 **右往左， 从下往上** 执行
+
+
+#### 单个loader的使用
+```
+module.exports = {
+  module: [
+      rules: [
+        {
+          test: /\.js$/,
+          use: "babel-loader"
+        }
+      ]
+    ]
+}
+```
+
+#### 多个loader使用
+> 下面这种，是不配置option的
+webpack.config.js
+```
+module.exports = {
+  module: [
+    rules: [
+      {
+        test: /\.js$/,
+        use: ["loader3", "loader2", "loader1"]
+      }
+    ]
+  ]
+}
+```
+
+多个loader处理同一种文件 比如 
+webpack.config.js
+```
+module.exports = {
+  module: [
+    rules: [
+      {
+        test: /\.js$/,
+        use: "loader3",
+        
+      },
+      {
+        test: /\.js$/,
+        use: "loader2"
+      },
+      {
+        test: /\.js$/,
+        use: "loader1"
+      }
+    ]
+  ]
+}
+```
+> 上面的loader是先执行 loader1 --> loader2 --> loader3
+
+## 自定义loader
+> webpack中的loader就是一个函数，类似下面的写法
+
+定义 loader/loader1.js
+```
+function loader(resource) {
+  console.log("loader1")
+
+  // loader的入参是我们处理的资源，比如css源码，js源码,
+  // 所以,这里在经过自定义loader处理完成以后，一定要 return 回去
+  return resource
+}
+
+module.exports = loader
+```
+同理，可以在loader目录下面建立n个自定义loader ，形如上面， loader1, loader2, loader3 ...
+
+使用 webpack.config.js
+
+```
+const path = require("path")
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: path.resolve(__dirname, "loader", ""loader1.js")
+      },
+      {
+        test: /\.js$/,
+        use: path.resolve(__dirname, "loader", ""loader2.js")
+      },
+      {
+        test: /\.js$/,
+        use: path.resolve(__dirname, "loader", ""loader3.js")
+      }
+    ]
+  }
+}
+```
+
+> 这里使用loader以后，打印的console顺序是 loader3, loader2, loader1
+
+loader是从下往上执行的
+
+通过使用规则，能够改变顺序
+
+```
+const path = require("path")
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: path.resolve(__dirname, "loader", ""loader1.js"),
+        enforce: "pre"
+      },
+      {
+        test: /\.js$/,
+        use: path.resolve(__dirname, "loader", ""loader2.js")
+      },
+      {
+        test: /\.js$/,
+        use: path.resolve(__dirname, "loader", ""loader3.js"),
+        enforce: "post"
+      }
+    ]
+  }
+}
+```
+> 指定了 enforce 强制先使用 loader1 再使用loader2 再使用 loader3, 没有添加 enforce配置的，都是 normal loader
+
+### 自定义loader 解决loader查找路径问题
+
+现在上面的loader查找是从 loader目录下面查找的，这里每次都要path.resolve，比较麻烦
+
+
+配置别名，解决查找自定义loader路径的问题
+webpack.config.js
+```
+const path = require("path")
+module.exports = {
+  resolveLoader: {
+    // 配置别名
+    alias: {
+      loader1: path.resolve(__dirname, "loader", ""loader1.js"),
+      loader2: path.resolve(__dirname, "loader", ""loader2.js"),
+      loader3: path.resolve(__dirname, "loader", ""loader3.js")
+    }
+  }
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: "loader1",
+        enforce: "pre"
+      },
+      {
+        test: /\.js$/,
+        use: "loader2"
+      },
+      {
+        test: /\.js$/,
+        use: "loader3",
+        enforce: "post"
+      }
+    ]
+  }
+}
+```
+
+配置loader的查询路径，解决查找自定义loader路径的问题
+
+webpack.config.js
+```
+const path = require("path")
+module.exports = {
+  resolveLoader: {
+    // 配置查询路径
+    modules: ["node_modules", path.resolve(__dirname, "loader")]
+  }
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: "loader1",
+        enforce: "pre"
+      },
+      {
+        test: /\.js$/,
+        use: "loader2"
+      },
+      {
+        test: /\.js$/,
+        use: "loader3",
+        enforce: "post"
+      }
+    ]
+  }
+}
+```
+配置了自定义loader的查询路径以后，会先去node_modules目录查找， 找不到再去 loader目录查找
+
 
 ## 在业务中引入包的方式
 - CommonJS -- node
@@ -204,6 +438,8 @@ module.exports = {
 1. expose-loader 挂载到window上
 2. new webpack.ProvidePlugin() 给每一个打包的文件提供占位符
 3. 引入CND 不打包
+
+还有loader的分类以及使用
 
 
 

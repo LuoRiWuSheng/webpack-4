@@ -7,7 +7,7 @@
 - [lesson-05](./lesson-05) html-webpack-plugin 模块
 - [lesson-06](./lesson-06) css-loader 静态资源
 - [lesson-07](./lesson-07) babel 处理js-es6转es5等， eslint配置使用
-- [lesson-08](lesson-08) 第三方模块引入问题，全局模块，防止重复打包externals
+- [lesson-08](lesson-08) 第三方模块引入问题，在线CDN问题，全局模块，防止重复打包externals， loader分类以及使用,自定义loader
 - [lesson-09](./lesson-09) 图片处理的几种场景
 - [lesson-10]()
 - [lesson-11]()
