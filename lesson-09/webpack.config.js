@@ -45,5 +45,10 @@ module.exports = {
   devtool: "source-map",
   devServer: {
     hot: true
+  },
+  resolve: {
+    alias: {
+      assets: path.resolve(__dirname, "src/")
+    }
   }
 }

@@ -13,6 +13,18 @@
 ### html-withimg-plugin
 
 >   解决img标签的图片地址引用问题
+> 这个是不能使用别名的路径加载地址的
+
+src/a.html
+```
+<img src="assets/img/1.jpg"/>
+```
+这种会报错，必须使用相对路径
+
+```
+<img src="../../img/1.jpg"/>
+```
+
 
 ### html-loader
 [html-loader](https://www.webpackjs.com/loaders/html-loader/)
@@ -43,6 +55,27 @@ document.body.appendChild(img)
 2. 在 css中使用图片地址，为什么不需要require？
 
 因为在css文件中直接直接使用图片地址，会经过 css-loader 进行解析，其实是图片资源是被追踪到了，并且进行了打包，自然是不需要require
+
+在css使用图片，结合 资源别名，能够省去大部分的路径
+
+src/assets/css/a.css
+```
+.box {
+  background: url(~assets/img/1.jpg)
+}
+```
+webpack.config.js中配置别名
+```
+module.exports = {
+  resolve: {
+    alias: {
+      assets: path.resolve(__dirname, "src/")
+    }
+  }
+}
+```
+
+注意，使用别名，前面一定要用 ~ 不然会导致解析出错
 
 3. 在图片文件过小，直接使用url-loader加载，直接转成base64呈现，不会有多余的HTTP请求
 
