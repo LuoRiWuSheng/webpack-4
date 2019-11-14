@@ -1,6 +1,6 @@
-.box {
-    width: 800px;
-    height: 800px;
+.css-box {
+    width: 200px;
+    height: 200px;
     color: green;
     background: pink;
 }

@@ -41,10 +41,37 @@ yarn add mini-css-extract-plugin --save-dev
 MiniCssExtractPlugin 这个查看的配置选项和 output的是差不多的 [output- 配置文档](https://www.webpackjs.com/configuration/output/)
 
 ```js
- new MiniCssExtractPlugin({
-    filename: "[name].css", // 通过这个插件，抽离出来的样式文件，叫什么名字
-    chunkFilename: "[id].css"
-})
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          // 添加css的浏览器前缀
+          "postcss-loader"
+        ]
+      },
+      {
+        test: /\.less$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          // 添加css的浏览器前缀
+          "postcss-loader",
+          "less-loader"
+        ]
+      }
+    ]
+  },
+  pluins: [
+    new MiniCssExtractPlugin({
+        filename: "[name].css", // 通过这个插件，抽离出来的样式文件，叫什么名字
+        chunkFilename: "[id].css"
+    })
+  ]
+}
 ```
 
 修改2个地方，一个是plugins配置，一个是module.rules
