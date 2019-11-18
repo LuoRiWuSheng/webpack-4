@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%=require("html-loader!./layout/head-common.ejs")%>
+  <style>
+    img {
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  首页
+  <div>
+    图片
+    <img src="~assets/img/1.jpg" />
+    <img src="../img/1.jpg" />
+    <img img:data-src="/src/img/1.jpg" />
+  </div>
+  <%=require('html-loader!./layout/footer.ejs')%>
+</body>
+
+</html>

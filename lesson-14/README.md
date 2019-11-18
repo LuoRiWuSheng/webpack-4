@@ -102,8 +102,11 @@ index.bundle.js的体积增大一点点，但是只打包了中文和英文的�
 ![locale-language.png](./screenshot/locale-language.png)
 
 
-### 4. 动态库链 - DllPlugin
+### 4. 动态库链 - DllPlugin-- 通过下面2篇文章，直接放弃dll构建
 [webpack优化(4)——DllPlugin动态链接库](https://blog.csdn.net/qq_17175013/article/details/86999614)
+[辛辛苦苦学会的 webpack dll 配置，可能已经过时了](https://juejin.im/post/5d8aac8fe51d4578477a6699)
+[面试必备！webpack 中那些易混淆的 5 个知识点](https://skychx.github.io/blog/scaffold/)
+
 > 动态库链的目的就是将一些第三方包打包到一起，在使用的时候，从已经打包的文件中直接使用，不再二次构建，提升构建速度
 
 > 我们可以提前将 react react-dom 提前构建成dll 然后在使用的时候，直接用，并不需要二次构建打包，因为这些包基本是不会频繁变动
@@ -235,8 +238,8 @@ about.html自己的js bundle会通过html-webpack-plugin 指定的chunks引入�
 ## 6 tree-shaking 
 [tree-shaking ](https://www.webpackjs.com/guides/tree-shaking/)
 > import 在生产环境下，会自动去掉没有使用的代码, 在开发环境中，还是存在的
-
 > 一定要使用 ES6的 export 和 import 进行模块的导入和导出， 不要使用 CommonJS的 require ，因为CommonJS的在生产环境并没有无用的代码剔除掉
+> tree shaking 依赖 ES2015语法的静态结构，所以要使用 import export
 
 src/math.js
 
@@ -256,6 +259,24 @@ import lib from "./math.js"
 // 只使用 sum，并没有使用 cube
 lib.sum(1,2)
 ```
+
+需要配置的地方
+webpack.config.js
+```
+module.exports = {
+ mode: 'development',
+ optimization: {
+   // 指定
+  usedExports: true,
+ },
+};
+```
+
+在 package.json中添加sideEffects字段
+
+
+
+
 
 **Question**
 1. 启用生产环境，在打包以后,在bundle中找不到引用过的方法？

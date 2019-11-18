@@ -12,8 +12,12 @@
 
 ### html-withimg-plugin
 
->   解决img标签的图片地址引用问题
-> 这个是不能使用别名的路径加载地址的
+>   解决html中img标签的图片地址引用问题
+>   这个是不能使用别名的路径加载地址的
+
+> 需要使用 npm 安装包， yarn 安装会提示找不到包的地址
+
+> 使用这个插件，如果html中的img标签被注释掉了 也会被解析的，特别是当img的 src指定的本地地址不存在的情况下，会报错，所以，如果不需要，就直接删掉img
 
 src/a.html
 ```
@@ -24,7 +28,6 @@ src/a.html
 ```
 <img src="../../img/1.jpg"/>
 ```
-
 
 ### html-loader
 [html-loader](https://www.webpackjs.com/loaders/html-loader/)
@@ -56,7 +59,7 @@ document.body.appendChild(img)
 
 因为在css文件中直接直接使用图片地址，会经过 css-loader 进行解析，其实是图片资源是被追踪到了，并且进行了打包，自然是不需要require
 
-在css使用图片，结合 资源别名，能够省去大部分的路径
+在css使用图片，结合 资源别名（resolve.alias），能够省去大部分的路径
 
 src/assets/css/a.css
 ```
@@ -75,7 +78,19 @@ module.exports = {
 }
 ```
 
-注意，使用别名，前面一定要用 ~ 不然会导致解析出错
+配置了别名以后，在一个css文件或者less文件中引用另一个
+
+src/a.css
+```
+@import "~assets/css/common.css";
+```
+也是要加 ~ 符号的
+
+<span style="color:#ff0000">注意</span>，使用别名，前面一定要用 ~ 不然会导致解析出错
+
+[Webpack 中css 如何 import 使用 alias别名 相对路径](https://blog.csdn.net/weixin_34417200/article/details/88839563)
+
+从上面的引用可以知道，如果在使用 vue全家桶开发时，使用别名报错，资源找不到，也是一样的解决思路
 
 3. 在图片文件过小，直接使用url-loader加载，直接转成base64呈现，不会有多余的HTTP请求
 
