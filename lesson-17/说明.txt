@@ -1,0 +1,8 @@
+https://github.com/legend-li/img_compress_rotate_preview_upload
+
+3种常用的图片压缩方法（重点介绍前端canvas压缩图片并上传）
+https://blog.csdn.net/huangpb123/article/details/80560980
+
+
+参数文档
+https://github.com/think2011/localResizeIMG/wiki/2.-%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3

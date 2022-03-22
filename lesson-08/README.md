@@ -151,7 +151,7 @@ module.exports = {
 }
 ```
 
-多个loader处理同一种文件 比如 
+多个loader处理同一种文件 比如
 webpack.config.js
 ```
 module.exports = {
@@ -160,7 +160,7 @@ module.exports = {
       {
         test: /\.js$/,
         use: "loader3",
-        
+
       },
       {
         test: /\.js$/,
@@ -202,15 +202,15 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: path.resolve(__dirname, "loader", ""loader1.js")
+        use: path.resolve(__dirname, "loader", "loader1.js")
       },
       {
         test: /\.js$/,
-        use: path.resolve(__dirname, "loader", ""loader2.js")
+        use: path.resolve(__dirname, "loader", "loader2.js")
       },
       {
         test: /\.js$/,
-        use: path.resolve(__dirname, "loader", ""loader3.js")
+        use: path.resolve(__dirname, "loader", "loader3.js")
       }
     ]
   }
@@ -326,11 +326,11 @@ module.exports = {
 ```
 const a = require("./a.js")
 ```
-- ES6 
+- ES6
 ```
 const a from "./a.js"
 ```
-示例： 
+示例：
 src/index.js
 ```
 // ES6引入的方式
@@ -389,7 +389,7 @@ webpack.config.js配置
 通过对比图，发现，ProvidePlugin是动态注入的，没有在业务中使用，就不会打包进去
 
 
-2. 使用了在线CDN库，但是又使用require的方式引入，导致打包的js体积变大，如何避免？ 
+2. 使用了在线CDN库，但是又使用require的方式引入，导致打包的js体积变大，如何避免？
 > 在使用了线上CDN库以后，比如jquery,Vue 这些都会挂载到window下面，单纯的使用CDN是不会被webpack打包处理的， 但是，又希望模块化的方式使用，使用require引入了， 就会被打包进bundle，导致体积增大
 
 [externals-webpack官网](https://www.webpackjs.com/configuration/externals/)

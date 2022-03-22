@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="file" id="file" accept="images/*">
+
+  <script src="../dist/zipLib.js"></script>
+  
+  <script>
+
+    document.querySelector("#file").addEventListener("change", function(event) {
+      let files = this.files
+
+      console.log(files)
+      
+      let a = new window.zipLib(files)
+
+      console.log(a.getCompressFiles())
+    })
+    
+  </script>
+</body>
+</html>
